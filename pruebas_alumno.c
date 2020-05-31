@@ -11,13 +11,13 @@
 
 bool insertar_muchos_elementos(lista_t* lista){
 	bool insertar;
-	for (int i=0; i<10001; i++){\
+	for (int i=0; i<10000; i++){
 		int* p = malloc(sizeof(int));
-		p = &i;
 		insertar = lista_insertar_ultimo(lista, p);
 		if (insertar == false){
 			return false;
 		}
+		free(p);
 	}
 	return insertar;
 }
@@ -25,7 +25,7 @@ bool insertar_muchos_elementos(lista_t* lista){
 void* borrar_muchos_elementos(lista_t* lista){
 	int* primero;
 	void* borrar_primero;
-	for(int i=0; i<10001; i++){
+	for(int i=0; i<10000; i++){
 		primero = lista_ver_primero(lista);
 		borrar_primero = lista_borrar_primero(lista);
 		if (primero != borrar_primero){
@@ -123,6 +123,7 @@ void pruebas_lista_grandes_volumenes(){
 	print_test("Despues de insertar 10 mil elementos la lista tiene largo 10000", lista_largo(lista)==10000);
 	print_test("Borrar muchos elementos", borrar_muchos_elementos(lista) != NULL);
 	print_test("Ahora la lista esta vacia nuevamente", lista_esta_vacia(lista) == true);
+	print_test("Despues de borrar los 10 mil elementos la lista tiene largo 0", lista_largo(lista)==0);
 	
 	/* Destruyo la lista*/
     lista_destruir(lista, NULL);
@@ -156,6 +157,7 @@ void pruebas_lista_insertando_puntero(){
 
 }
 
+
 void pruebas_iterador_externo(){
 	printf("INICIO DE PRUEBAS CON ITERADOR EXTERNO\n");
 	/* Declaro las variables a utilizar */
@@ -174,6 +176,7 @@ void pruebas_iterador_externo(){
 	lista_destruir(lista, NULL);
 	
 }
+
 
 void pruebas_iterador_interno(){
 	printf("INICIO DE PRUEBAS CON ITERADOR INTERNO\n");
@@ -197,6 +200,6 @@ void pruebas_lista_alumno() {
 	pruebas_lista_grandes_volumenes();
 	pruebas_lista_insertando_pila();
 	pruebas_lista_insertando_puntero();
-	pruebas_iterador_externo();
 	pruebas_iterador_interno();
+	pruebas_iterador_externo();
 }

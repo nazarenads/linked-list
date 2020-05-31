@@ -74,9 +74,6 @@ bool lista_insertar_primero(lista_t* lista, void* dato){
 
 bool lista_insertar_ultimo(lista_t* lista, void* dato){
 	nodo_t* nodo = crear_nodo(dato);
-	if(!nodo){
-		return false;
-	}
 	if (lista_esta_vacia(lista)){
 		lista->prim = nodo;
 		lista->ult = nodo;
@@ -203,12 +200,14 @@ bool lista_iter_insertar(lista_iter_t* iter, void* dato){
 }
 void* lista_iter_borrar(lista_iter_t* iter){
 	//caso bordes la lista esta vacia o ya estoy fuera de la lista
-	if (lista_esta_vacia(iter->lista) || !iter->actual){
+	if (lista_esta_vacia(iter->lista) || lista_iter_al_final(iter)){
 		return NULL;
 	}
 	//caso borde: tener que borrar al principio, para saber si estoy al principio chequeo si anterior es NULL
 	if(!iter->anterior){
-		return lista_borrar_primero(iter->lista);
+		void* borrar = lista_borrar_primero(iter->lista);
+		iter->actual = iter->lista->prim;
+		return borrar;
 	}
 	//me guardo en una variable el nodo que al momento de borrar era el actual
 	nodo_t* viejo_actual = iter->actual;
