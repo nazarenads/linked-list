@@ -101,7 +101,6 @@ void* lista_borrar_primero(lista_t* lista){
 	nodo_t* nuevo_primero = primero->prox;
 	lista->prim = nuevo_primero;
 	lista->largo--;
-	free(primero);
 	return dato;
 }
 
@@ -166,6 +165,8 @@ bool lista_iter_al_final(const lista_iter_t* iter){
 	return !iter->actual; 
 }
 void lista_iter_destruir(lista_iter_t* iter){
+	free(iter->actual);
+	free(iter->anterior);
 	free(iter);
 }
 bool lista_iter_insertar(lista_iter_t* iter, void* dato){
@@ -215,8 +216,6 @@ void* lista_iter_borrar(lista_iter_t* iter){
 	nodo_t* nuevo_actual = viejo_actual->prox;
 	//quiero que el proximo del anterior ahora sea el prox del que borre
 	iter->anterior->prox = nuevo_actual; 
-	//libero el nodo que era el actual
-	//free(viejo_actual);
 	//me falta hacer que el actual del iter se actualice y apunte al nuevo actual
 	iter->actual = nuevo_actual;
 	//caso borde: tener que borrar al final, para saber si estoy al final me fijo que el prox sea null
