@@ -18,7 +18,6 @@ bool insertar_muchos_elementos(lista_t* lista){
 		if (insertar == false){
 			return false;
 		}
-		free(p);
 	}
 	return insertar;
 }
@@ -162,18 +161,14 @@ void pruebas_iterador_externo(){
 	/* Declaro las variables a utilizar */
 	lista_t* lista = lista_crear();
 	int valor = 5;
-	int otro_valor = 12;
-
-	//print_test("Insertar primero un elemento en la lista vacia", lista_insertar_primero(lista, &valor) == true);
-	//print_test("Insertar ultimo un segundo elemento", lista_insertar_ultimo(lista, &otro_valor) == true);
 
 	lista_iter_t* iter = lista_iter_crear(lista);
-	/*print_test("Inserto un elemento con el iterador recien creado", lista_iter_insertar(iter, &valor) == true);
+	print_test("Inserto un elemento con el iterador recien creado", lista_iter_insertar(iter, &valor) == true);
 	print_test("Al insertar un elemento con el iterador recien creado, se inserta al principio", lista_ver_primero(lista) == &valor);
 	print_test("Me fijo en que posicion se encuentra el iterador ahora", lista_iter_ver_actual(iter)!=NULL);
 	print_test("Avanzo un lugar en la lista", lista_iter_avanzar(iter) == true);
 	print_test("No puedo avanzar porque llegue al final de la lista", lista_iter_avanzar(iter) == false);
-	print_test("Chequeo que estoy al final", lista_iter_al_final(iter)==true);*/
+	print_test("Chequeo que estoy al final", lista_iter_al_final(iter)==true);
 
 	lista_iter_destruir(iter);
 	lista_destruir(lista, NULL);
