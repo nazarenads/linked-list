@@ -17,7 +17,6 @@ bool insertar_muchos_elementos(lista_t* lista){
 		if (insertar == false){
 			return false;
 		}
-		free(p);
 	}
 	return insertar;
 }
@@ -31,6 +30,7 @@ void* borrar_muchos_elementos(lista_t* lista){
 		if (primero != borrar_primero){
 			return NULL;
 		}
+		free(borrar_primero);
 	}
 	return borrar_primero; 
 }
