@@ -1,7 +1,2 @@
-﻿  lista.c
-  main.c
-  pila.c
-  pruebas_alumno.c
-  testing.c
-  Generating Code...
+﻿  pruebas_alumno.c
   lista.vcxproj -> C:\Desarrollo\lista\Debug\lista.exe

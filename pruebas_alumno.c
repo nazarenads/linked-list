@@ -13,6 +13,7 @@ bool insertar_muchos_elementos(lista_t* lista){
 	bool insertar;
 	for (int i=0; i<10000; i++){
 		int* p = malloc(sizeof(int));
+		*p = i;
 		insertar = lista_insertar_ultimo(lista, p);
 		if (insertar == false){
 			return false;
@@ -172,9 +173,9 @@ void pruebas_iterador_externo(){
 	print_test("No puedo avanzar porque llegue al final de la lista", lista_iter_avanzar(iter) == false);
 	print_test("Chequeo que estoy al final", lista_iter_al_final(iter)==true);
 
-	lista_iter_destruir(iter);
-	lista_destruir(lista, NULL);
 	
+	lista_destruir(lista, NULL);
+	lista_iter_destruir(iter);
 }
 
 
@@ -200,6 +201,6 @@ void pruebas_lista_alumno() {
 	pruebas_lista_grandes_volumenes();
 	pruebas_lista_insertando_pila();
 	pruebas_lista_insertando_puntero();
-	pruebas_iterador_interno();
 	pruebas_iterador_externo();
+	pruebas_iterador_interno();
 }
