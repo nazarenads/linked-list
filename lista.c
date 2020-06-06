@@ -74,6 +74,9 @@ bool lista_insertar_primero(lista_t* lista, void* dato){
 
 bool lista_insertar_ultimo(lista_t* lista, void* dato){
 	nodo_t* nodo = crear_nodo(dato);
+	if(!nodo){
+		return false;
+	}
 	if (lista_esta_vacia(lista)){
 		lista->prim = nodo;
 		lista->ult = nodo;
@@ -101,6 +104,7 @@ void* lista_borrar_primero(lista_t* lista){
 	nodo_t* nuevo_primero = primero->prox;
 	lista->prim = nuevo_primero;
 	lista->largo--;
+	free(primero);
 	return dato;
 }
 
@@ -159,14 +163,13 @@ bool lista_iter_avanzar(lista_iter_t* iter){
 	return true;
 }
 void* lista_iter_ver_actual(const lista_iter_t* iter){
-	return iter->actual;
+	if(lista_iter_al_final(iter)) return NULL;
+	return iter->actual->dato;
 }
 bool lista_iter_al_final(const lista_iter_t* iter){
 	return !iter->actual; 
 }
 void lista_iter_destruir(lista_iter_t* iter){
-	free(iter->actual);
-	free(iter->anterior);
 	free(iter);
 }
 bool lista_iter_insertar(lista_iter_t* iter, void* dato){
@@ -198,7 +201,7 @@ bool lista_iter_insertar(lista_iter_t* iter, void* dato){
 	return true;
 }
 void* lista_iter_borrar(lista_iter_t* iter){
-	//caso bordes la lista esta vacia o ya estoy fuera de la lista
+	//casos borde: la lista esta vacia o ya estoy fuera de la lista
 	if (lista_esta_vacia(iter->lista) || lista_iter_al_final(iter)){
 		return NULL;
 	}
@@ -208,19 +211,14 @@ void* lista_iter_borrar(lista_iter_t* iter){
 		iter->actual = iter->lista->prim;
 		return borrar;
 	}
-	//me guardo en una variable el nodo que al momento de borrar era el actual
 	nodo_t* viejo_actual = iter->actual;
-	//me guardo el dato del nodo que voy a borrar para devolverlo
 	void* dato = viejo_actual->dato;
-	//me guardo el proximo del viejo actual que va a ser el nuevo actual
-	nodo_t* nuevo_actual = viejo_actual->prox;
-	//quiero que el proximo del anterior ahora sea el prox del que borre
-	iter->anterior->prox = nuevo_actual; 
-	//me falta hacer que el actual del iter se actualice y apunte al nuevo actual
-	iter->actual = nuevo_actual;
+	free(iter->actual);
+	iter->actual = viejo_actual->prox;
+	iter->anterior->prox = iter->actual;
 	//caso borde: tener que borrar al final, para saber si estoy al final me fijo que el prox sea null
-	if (!iter->actual->prox){
-		iter->lista->ult = nuevo_actual;		
+	if (!viejo_actual->prox){
+		iter->lista->ult = iter->actual;		
 	}
 	iter->lista->largo--;
 	return dato;

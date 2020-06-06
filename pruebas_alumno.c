@@ -13,7 +13,6 @@ bool insertar_muchos_elementos(lista_t* lista){
 	bool insertar;
 	for (int i=0; i<10000; i++){
 		int* p = malloc(sizeof(int));
-		*p = i;
 		insertar = lista_insertar_ultimo(lista, p);
 		if (insertar == false){
 			return false;
@@ -164,6 +163,7 @@ void pruebas_iterador_externo(){
 	/* Declaro las variables a utilizar */
 	lista_t* lista = lista_crear();
 	int valor = 5;
+	int otro_valor = 12;
 
 	lista_iter_t* iter = lista_iter_crear(lista);
 	print_test("Inserto un elemento con el iterador recien creado", lista_iter_insertar(iter, &valor) == true);
@@ -172,10 +172,22 @@ void pruebas_iterador_externo(){
 	print_test("Avanzo un lugar en la lista", lista_iter_avanzar(iter) == true);
 	print_test("No puedo avanzar porque llegue al final de la lista", lista_iter_avanzar(iter) == false);
 	print_test("Chequeo que estoy al final", lista_iter_al_final(iter)==true);
+	print_test("Inserto un elemento al final", lista_iter_insertar(iter, &otro_valor) == true);
+	print_test("Verifico el actual luego de insertar al final", lista_iter_ver_actual(iter) == &otro_valor);
+	print_test("Se actualizó el largo", lista_largo(lista)==2);
 
-	
+	lista_iter_t* otro_iter = lista_iter_crear(lista);
+	print_test("Se creó un nuevo iterador", true);
+	print_test("El nuevo iterador tiene que tener como actual al primero de la lista", lista_iter_ver_actual(otro_iter)==lista_ver_primero(lista));
+	print_test("Avanzo un lugar en la lista con el nuevo iterador", lista_iter_avanzar(otro_iter) == true);
+	print_test("Ver actual del nuevo iterador después de avanzar", lista_iter_ver_actual(otro_iter)==&otro_valor);
+	print_test("Avanzo otro lugar en la lista con el nuevo iterador", lista_iter_avanzar(otro_iter) == true);
+	print_test("Ver actual con el nuevo iterador", lista_iter_ver_actual(otro_iter)==NULL);
+	print_test("El segundo iterador está al final", lista_iter_al_final(otro_iter)==true);
+
 	lista_destruir(lista, NULL);
 	lista_iter_destruir(iter);
+	lista_iter_destruir(otro_iter);
 }
 
 
