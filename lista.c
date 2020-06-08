@@ -229,9 +229,9 @@ void* lista_iter_borrar(lista_iter_t* iter){
 
 void lista_iterar(lista_t* lista, bool visitar(void* dato, void* extra), void* extra){
 	nodo_t* actual = lista->prim;
-	bool continuar = visitar(actual, extra);
-	while (actual->prox && continuar){
-		continuar = visitar(actual, extra);
+	bool continuar;
+	do {
+		continuar = visitar(actual->dato, extra);
 		actual = actual->prox;
-	}
+	} while (actual && continuar);
 }
