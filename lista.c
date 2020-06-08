@@ -14,7 +14,9 @@
 
 nodo_t* crear_nodo(void* valor) { 
 	nodo_t* nodo = malloc(sizeof(nodo_t)); 
-	if (!nodo) return NULL; 
+	if (!nodo) { 
+		return NULL; 
+	}
 	nodo->dato = valor; 
 	nodo->prox = NULL; 
 	return nodo; 
@@ -74,9 +76,8 @@ bool lista_insertar_primero(lista_t* lista, void* dato){
 
 bool lista_insertar_ultimo(lista_t* lista, void* dato){
 	nodo_t* nodo = crear_nodo(dato);
-	if(!nodo){
+	if (!nodo)
 		return false;
-	}
 	if (lista_esta_vacia(lista)){
 		lista->prim = nodo;
 		lista->ult = nodo;
@@ -97,11 +98,10 @@ void* lista_borrar_primero(lista_t* lista){
 	nodo_t* primero = lista->prim;
 	void* dato = primero->dato;
 	//caso borde, si la lista tenia un solo elemento, tanto prim como ult deben quedar en NULL
-	if (!primero->prox){
+	if (!primero->prox) {
 		lista->ult = NULL;
-		lista->prim =  NULL;
 	}
-	nodo_t* nuevo_primero = primero->prox;
+	nodo_t * nuevo_primero = primero->prox;
 	lista->prim = nuevo_primero;
 	lista->largo--;
 	free(primero);
@@ -163,7 +163,8 @@ bool lista_iter_avanzar(lista_iter_t* iter){
 	return true;
 }
 void* lista_iter_ver_actual(const lista_iter_t* iter){
-	if(lista_iter_al_final(iter)) return NULL;
+	if(lista_iter_al_final(iter)) 
+		return NULL;
 	return iter->actual->dato;
 }
 bool lista_iter_al_final(const lista_iter_t* iter){
@@ -172,54 +173,52 @@ bool lista_iter_al_final(const lista_iter_t* iter){
 void lista_iter_destruir(lista_iter_t* iter){
 	free(iter);
 }
+
 bool lista_iter_insertar(lista_iter_t* iter, void* dato){
-	// caso borde: estoy al principio de la lista o la lista esta vacia
-	if (!lista_iter_avanzar(iter)){
-		bool insertar = lista_insertar_primero(iter->lista, dato);
-		iter->actual = iter->lista->prim;
-		return insertar;
-	}
-	//caso borde: si ya me sali de la lista no puedo insertar
-	if (lista_iter_al_final(iter)){
-		return false;
-	}
 	// caso borde: estoy al final de la lista
-	if (!iter->actual->prox){ 
+	if (!iter->actual){ 
 		bool insertar =	lista_insertar_ultimo(iter->lista, dato);
 		iter->actual = iter->lista->ult;
+		return insertar;
+	}
+	// caso borde: estoy al principio de la lista 
+	if(!iter->anterior) {
+		bool insertar = lista_insertar_primero(iter->lista, dato);
+		iter->actual = iter->lista->prim;
 		return insertar;
 	}
 	nodo_t* nuevo_nodo = crear_nodo(dato);
 	if(!nuevo_nodo){
 		return false;
 	}
-	nodo_t* viejo_actual = iter->actual;
-	iter->actual = nuevo_nodo;
-	iter->anterior->prox = nuevo_nodo;
-	nuevo_nodo->prox = viejo_actual;
+
+	nuevo_nodo->prox		= iter->actual;
+	iter->anterior->prox	= nuevo_nodo;
+	iter->actual			= nuevo_nodo;
 	iter->lista->largo++;
 	return true;
 }
+
 void* lista_iter_borrar(lista_iter_t* iter){
-	//casos borde: la lista esta vacia o ya estoy fuera de la lista
-	if (lista_esta_vacia(iter->lista) || lista_iter_al_final(iter)){
+	// casos borde: la lista esta vacia o ya estoy fuera de la lista
+	if (lista_iter_al_final(iter)) {
 		return NULL;
 	}
-	//caso borde: tener que borrar al principio, para saber si estoy al principio chequeo si anterior es NULL
-	if(!iter->anterior){
-		void* borrar = lista_borrar_primero(iter->lista);
-		iter->actual = iter->lista->prim;
-		return borrar;
+	if(iter->anterior) {
+		iter->anterior->prox = iter->actual->prox;
 	}
-	nodo_t* viejo_actual = iter->actual;
-	void* dato = viejo_actual->dato;
-	free(iter->actual);
-	iter->actual = viejo_actual->prox;
-	iter->anterior->prox = iter->actual;
-	//caso borde: tener que borrar al final, para saber si estoy al final me fijo que el prox sea null
-	if (!viejo_actual->prox){
-		iter->lista->ult = iter->actual;		
+	//caso borde: tener que borrar al final
+	if(iter->actual == iter->lista->ult) {
+		iter->lista->ult = iter->anterior;
 	}
+	// caso borde: tener que borrar al principio
+	if(iter->actual == iter->lista->prim)  {
+		iter->lista->prim = iter->actual->prox;
+	}
+	void	* dato			= iter->actual->dato;
+	nodo_t	* viejo_actual	= iter->actual;
+	iter->actual = iter->actual->prox;
+	free(viejo_actual);
 	iter->lista->largo--;
 	return dato;
 } 

@@ -168,7 +168,7 @@ void pruebas_iterador_externo(){
 	lista_iter_t* iter = lista_iter_crear(lista);
 	print_test("Inserto un elemento con el iterador recien creado", lista_iter_insertar(iter, &valor) == true);
 	print_test("Al insertar un elemento con el iterador recien creado, se inserta al principio", lista_ver_primero(lista) == &valor);
-	print_test("Me fijo en que posicion se encuentra el iterador ahora", lista_iter_ver_actual(iter)!=NULL);
+	print_test("Me fijo en que posicion se encuentra el iterador ahora", lista_iter_ver_actual(iter)==&valor);
 	print_test("Avanzo un lugar en la lista", lista_iter_avanzar(iter) == true);
 	print_test("No puedo avanzar porque llegue al final de la lista", lista_iter_avanzar(iter) == false);
 	print_test("Chequeo que estoy al final", lista_iter_al_final(iter)==true);
@@ -184,10 +184,19 @@ void pruebas_iterador_externo(){
 	print_test("Avanzo otro lugar en la lista con el nuevo iterador", lista_iter_avanzar(otro_iter) == true);
 	print_test("Ver actual con el nuevo iterador", lista_iter_ver_actual(otro_iter)==NULL);
 	print_test("El segundo iterador está al final", lista_iter_al_final(otro_iter)==true);
+	print_test("No borro un lugar en la lista con el iterador porque estoy al final", lista_iter_borrar(otro_iter) == NULL);
 
-	lista_destruir(lista, NULL);
+	lista_iter_t* otro_iter_mas = lista_iter_crear(lista);
+	print_test("Se creó un nuevo iterador", true);
+	print_test("Borro un lugar en la lista con el iterador", lista_iter_borrar(otro_iter_mas) == &valor);
+	print_test("Borro otro lugar en la lista con el iterador", lista_iter_borrar(otro_iter_mas) == &otro_valor);
+	print_test("Se actualizó el largo", lista_largo(lista)==0);
+
 	lista_iter_destruir(iter);
 	lista_iter_destruir(otro_iter);
+	lista_iter_destruir(otro_iter_mas);
+
+	lista_destruir(lista, NULL);
 }
 
 
